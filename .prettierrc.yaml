@@ -1,0 +1,2 @@
+# Trailing commas result in fewer changed lines in diffs
+trailingComma: all

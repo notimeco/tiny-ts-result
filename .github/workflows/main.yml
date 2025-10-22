@@ -1,0 +1,40 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: Build
+        run: |
+          pnpm install
+          pnpm tsc
+
+      - name: Static analysis
+        run: |
+          pnpm fmt
+          pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: List package files
+        run: npm pack --dry-run
