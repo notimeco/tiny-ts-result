@@ -8,12 +8,15 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
     "noErrorTruncation": true,
     "declaration": true,
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    // Strict rules
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
@@ -25,7 +28,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "erasableSyntaxOnly": true
   }
 }

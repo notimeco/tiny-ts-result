@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { Result } from "./result";
 import { resultOk, resultErr } from "./result";
-import { errToException, exceptionToErr, err, wrap, unwrap } from "./error";
+import { errToException, unknownToErr, err, wrap, unwrap } from "./error";
 import type { Err } from "./error";
 
 describe("exceptionToErr", () => {
-  it("maps an exception to an Err", () => {
-    const err = exceptionToErr(new Error("my error", { cause: { data: 5 } }));
+  it("maps an exception to an Err type", () => {
+    const err = unknownToErr(new Error("my error", { cause: { data: 5 } }));
     expect(err).toEqual(
       expect.objectContaining({
         message: "my error",
@@ -15,15 +15,34 @@ describe("exceptionToErr", () => {
     );
   });
 
-  it("maps random nonsense that was thrown to an Err", () => {
-    const err = exceptionToErr("foo");
+  it("mapped exception is both Err type and Error class", () => {
+    const err: Err = unknownToErr(
+      new Error("my error", { cause: { data: 5 } }),
+    );
+    expect(err).toBeInstanceOf(Error);
+  });
+
+  it("maps a string to an Err using it as the message", () => {
+    const err = unknownToErr("foo");
     expect(err).toEqual(
       expect.objectContaining({
-        message: "Unknown error",
-        cause: { error: "foo" },
+        message: "foo",
       }),
     );
   });
+
+  it.each([true, 0, Promise.resolve()])(
+    "maps random nonsense that was thrown to an Err type",
+    (nonsense) => {
+      const err = unknownToErr(nonsense);
+      expect(err).toEqual(
+        expect.objectContaining({
+          message: "Unknown error",
+          cause: { error: nonsense },
+        }),
+      );
+    },
+  );
 });
 
 describe("errToException", () => {
@@ -55,10 +74,9 @@ describe("wrap", () => {
     expect(result).toEqual({
       isOk: false,
       ok: undefined,
-      err: {
+      err: expect.objectContaining({
         message: "failed",
-        cause: undefined,
-      },
+      }),
     });
   });
 });

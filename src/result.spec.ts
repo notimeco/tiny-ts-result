@@ -22,10 +22,19 @@ describe("resultOk", () => {
 
 describe("resultErr", () => {
   it("makes a ResultErr", () => {
-    expect(resultErr("failed")).toEqual({
+    expect(resultErr({ message: "failed" })).toEqual({
       isOk: false,
       ok: undefined,
-      err: "failed",
+      err: { message: "failed" },
+    });
+  });
+
+  it("uses the same Error object unchanged", () => {
+    const error = new Error("failed");
+    expect(resultErr(error)).toEqual({
+      isOk: false,
+      ok: undefined,
+      err: error,
     });
   });
 });

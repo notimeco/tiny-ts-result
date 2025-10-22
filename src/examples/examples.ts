@@ -5,7 +5,7 @@ import {
   isResultErr,
   groupResults,
 } from "../result";
-import type { Result } from "../result";
+import type { Result, Something } from "../result";
 import type { Err } from "../error";
 import { err } from "../error";
 import { randomUUID } from "node:crypto";
@@ -14,30 +14,6 @@ import { randomUUID } from "node:crypto";
  * This module serves to both demonstrate some usage scenarios, and
  * to assert what typescript will and won't compile.
  */
-
-type User = {
-  id: string;
-  name: string;
-};
-
-function getUser(): Result<User> {
-  return resultOk({
-    id: randomUUID(),
-    name: "Joe",
-  });
-}
-
-function getId(): Result<string> {
-  return resultOk("my-id");
-}
-
-function logErr(err: Err): void {
-  console.error(err.message);
-}
-
-function logUser(user: User): void {
-  console.log(`Hello: ${user.name}`);
-}
 
 /**
  * Destructuring the result type allows for type safe error handling without
@@ -64,8 +40,26 @@ function processResultsWithPrimitive({ ok: id, err }: Result<string>): void {
   const oks: string[] = [];
   const errs: Err[] = [];
 
+  if (id) {
+    // Positive truthy check proves `id` is `string`
+    oks.push(id);
+  } else {
+    // Negative truthy check doesn't prove anything about `err`.
+    // `id` could have been an empty `string` (falsy).
+    // @ts-expect-error Demonstrate failed narrowing
+    errs.push(err);
+  }
+
+  if (!id) {
+    // Falsy check can't narrow err because string can also be false.
+    // @ts-expect-error Demonstrate failed narrowing
+    errs.push(err);
+  }
+
+  // String checking (not truthy/falsy) is safest.
   if (err !== undefined) {
     errs.push(err);
+    // Early return will narrow the types in the remaining scope.
     return;
   }
 
@@ -90,7 +84,7 @@ function processResultsWithPrimitive({ ok: id, err }: Result<string>): void {
  *  - `isResultOk`type guard function
  *  - `isResultErr` type guard function
  */
-function processResult<TOk extends NonNullable<unknown>>(
+function processHalfGenericResult<TOk extends Something>(
   result: Result<TOk>,
 ): void {
   const { isOk, ok, err } = result;
@@ -160,13 +154,14 @@ function processResult<TOk extends NonNullable<unknown>>(
 }
 
 /*
- * Same examples again in a loop.
+ * Same scenarios again this time in a loop and also keeping
+ * TErr generic instead of using the default type Err.
  */
-function processResults<TOk extends NonNullable<unknown>>(
-  results: Result<TOk>[],
+function processFullyGenericResults<TOk extends Something, TErr extends Err>(
+  results: Result<TOk, TErr>[],
 ): void {
   const oks: TOk[] = [];
-  const errs: Err[] = [];
+  const errs: TErr[] = [];
 
   for (const result of results) {
     const { isOk, ok, err } = result;
@@ -198,12 +193,22 @@ function processResults<TOk extends NonNullable<unknown>>(
 
     // Narrowing based on default generic type Err works
     if (err === undefined) {
+      // `err` has been narrowed to === `undefined`
+      // But `ok` appears to still be referening `TErr` which is never narrowed by control flow.
+      //
+      // Argument of type 'TOk | undefined' is not assignable to parameter of type 'TOk'.    Type 'undefined' is not assignable to type 'TOk'.
+      // @ts-expect-error Demonstrate failed narrowing
       oks.push(ok);
     } else {
       errs.push(err);
     }
     // Without destructuring (no change)
     if (result.err === undefined) {
+      // `err` has been narrowed to === `undefined`
+      // But `ok` appears to still be referening `TErr` which is never narrowed by control flow.
+      //
+      // Argument of type 'TOk | undefined' is not assignable to parameter of type 'TOk'.    Type 'undefined' is not assignable to type 'TOk'.
+      // @ts-expect-error Demonstrate failed narrowing
       oks.push(result.ok);
     } else {
       errs.push(result.err);
@@ -235,10 +240,10 @@ function processResults<TOk extends NonNullable<unknown>>(
  * Helper to make sure the code is all used and all can run.
  */
 export function runExamples(): void {
-  processResult(resultOk("hi"));
-  processResult(resultErr(err("asdf")));
+  processHalfGenericResult(resultOk("hi"));
+  processHalfGenericResult(resultErr(err("asdf")));
 
-  processResults([resultOk("hi"), resultErr(err("asdf"))]);
+  processFullyGenericResults([resultOk("hi"), resultErr(err("asdf"))]);
 
   groupResults([resultOk("hi"), resultErr(err("asdf"))]);
 
@@ -247,4 +252,28 @@ export function runExamples(): void {
 
   processResultsWithPrimitive(getId());
   processResultsWithPrimitive(resultErr(err("fail")));
+}
+
+type User = {
+  id: string;
+  name: string;
+};
+
+function getUser(): Result<User> {
+  return resultOk({
+    id: randomUUID(),
+    name: "Joe",
+  });
+}
+
+function getId(): Result<string> {
+  return resultOk("my-id");
+}
+
+function logErr(err: Err): void {
+  console.error(err.message);
+}
+
+function logUser(user: User): void {
+  console.log(`Hello: ${user.name}`);
 }
