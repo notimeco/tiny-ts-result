@@ -13,7 +13,14 @@ type NullaryFunction<TOk extends Something> = () => TOk | never;
  * accept any constructur but prevent
  * it from being called.
  */
-type ErrorConstructor<TErr extends Err = Err> = new (...args: never[]) => TErr;
+type ErrorConstructorNeverCalled<TErr extends Err = Err> = new (
+  ...args: never[]
+) => TErr;
+
+type ErrorConstructor = new (
+  message: string,
+  options: { cause: unknown },
+) => Error;
 
 /**
  * The minimum structure of an Error.
@@ -129,7 +136,7 @@ export function wrap<TOk extends Something>(
  */
 export function wrapInstanceOf<TOk extends Something, TErr extends Err>(
   fn: NullaryFunction<TOk>,
-  constructor: ErrorConstructor<TErr>,
+  constructor: ErrorConstructorNeverCalled<TErr>,
 ): Result<TOk, TErr> {
   try {
     return resultOk(fn());
@@ -149,29 +156,6 @@ export function wrapInstanceOf<TOk extends Something, TErr extends Err>(
 }
 
 /**
- * Return either the ok result or throw an Error.
- *
- * Use to switch from "Errors as values" back to "Exceptions".
- * If the TErr type extends Error than it will be thrown unchaned.
- * Else it will create a new Error from simple Err data.
- *
- * Useful when wanting to return to the original exception
- * or if the specific type of Error doesn't matter.
- *
- * ```typescript
- * const ok = unwrap(getResult());
- * ````
- */
-export function unwrap<TOk extends Something>(
-  result: Result<TOk, Err>,
-): TOk | never {
-  if (result.isOk) {
-    return result.ok;
-  }
-  throw errToException(result.err);
-}
-
-/**
  * Return either the ok result or throw a specific Error type.
  *
  * Use to switch from "Errors as values" back to "Exceptions".
@@ -185,12 +169,17 @@ export function unwrap<TOk extends Something>(
  * const ok = unwrap(getResult());
  * ````
  */
-export function unwrapWith<TOk extends Something>(
-  result: Result<TOk, Err>,
-  errorConstructor: new (message: string, options: { cause: unknown }) => Error,
+export function unwrap<TOk extends Something>(
+  { isOk, ok, err }: Result<TOk, Err>,
+  errorConstructor: ErrorConstructor = Error,
 ): TOk | never {
-  if (result.isOk) {
-    return result.ok;
+  if (isOk) {
+    return ok;
   }
-  throw new errorConstructor(result.err.message, { cause: result.err.cause });
+
+  if (err instanceof errorConstructor) {
+    throw err;
+  }
+
+  throw new errorConstructor(err.message, { cause: err.cause });
 }
