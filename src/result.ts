@@ -1,21 +1,21 @@
-import { Err } from "./error";
+import type { Err } from "./error";
 
 /**
  * `Something` is used as a generic type constraint, meaning the
  * generic type can be anything other than null or undefined.
- * This includes strings, boolean, etc and is deliberate.
+ * Deliberately includes primitive types like string.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type Something = {};
 
 /**
  * The ok or success variant of the result union.
- * Typically contains the return value of a
+ * Typically, contains the return value of a
  * function that might have failed.
  *
- * `isOk` is a non generic descriminator enabling
+ * `isOk` is a non-generic discriminator enabling
  * easy type narrowing from a result type even
- * in generic contexts where neight TOk or
+ * in generic contexts where neither TOk nor
  * TErr is known.
  */
 export type ResultOk<TOk extends Something> = {
@@ -26,14 +26,14 @@ export type ResultOk<TOk extends Something> = {
 
 /**
  * The err or failure variant of the result union.
- * Typically contains the Error thrown by a
+ * Typically, contains the Error thrown by a
  * function. Or a simpler Err type that
- * struturally resembles an Error but
- * may never have been thrown.
+ * structurally resembles an Error but
+ * may have never been thrown.
  *
- * `isOk` is a non generic descriminator enabling
+ * `isOk` is a non-generic discriminator enabling
  * easy type narrowing from a result type even
- * in generic contexts where neight TOk or
+ * in generic contexts where neither TOk nor
  * TErr is known.
  */
 export type ResultErr<TErr extends Err = Err> = {
@@ -43,16 +43,16 @@ export type ResultErr<TErr extends Err = Err> = {
 };
 
 /**
- * A union representing either a sucessful `ok` value
- * or a failued `err` value.
+ * A union representing either a successful `ok` value
+ * or a failed `err` value.
  *
  * Functions can return result types instead of
  * throwing errors. The presence on ok value
  * means there is no error and vice versa.
  *
- * `isOk` is a non generic descriminator enabling
+ * `isOk` is a non-generic discriminator enabling
  * easy type narrowing from a result type even
- * in generic contexts where neight TOk or
+ * in generic contexts where neither TOk nor
  * TErr is known.
  */
 export type Result<TOk extends Something, TErr extends Err = Err> =
@@ -60,9 +60,9 @@ export type Result<TOk extends Something, TErr extends Err = Err> =
   | ResultErr<TErr>;
 
 /**
- * Create an ok result indicating the task succeeded.
+ * Make an ok result indicating the task succeeded.
  */
-export function resultOk<TOk extends Something>(ok: TOk): ResultOk<TOk> {
+export function makeResultOk<TOk extends Something>(ok: TOk): ResultOk<TOk> {
   return {
     isOk: true,
     ok,
@@ -73,7 +73,9 @@ export function resultOk<TOk extends Something>(ok: TOk): ResultOk<TOk> {
 /**
  * Create an err result indicating the task failed.
  */
-export function resultErr<TErr extends Err = Err>(err: TErr): ResultErr<TErr> {
+export function makeResultErr<TErr extends Err = Err>(
+  err: TErr,
+): ResultErr<TErr> {
   return {
     isOk: false,
     ok: undefined,
@@ -82,7 +84,7 @@ export function resultErr<TErr extends Err = Err>(err: TErr): ResultErr<TErr> {
 }
 
 /**
- * Type guard to narrow a any generic Result to any generic ResultOk.
+ * Type guard to narrow any generic Result to any generic ResultOk.
  */
 export function isResultOk<TOk extends Something>(
   result: Result<TOk, Err>,
@@ -91,7 +93,7 @@ export function isResultOk<TOk extends Something>(
 }
 
 /**
- * Type guard to narrow a any generic Result to any generic ResultErr.
+ * Type guard to narrow any generic Result to any generic ResultErr.
  */
 export function isResultErr<TErr extends Err = Err>(
   result: Result<Something, TErr>,
@@ -100,8 +102,7 @@ export function isResultErr<TErr extends Err = Err>(
 }
 
 /**
- * Split a batch of results into two groups.
- * All ok results and all err results.
+ * Group a batch of results into oks and errors.
  */
 export function groupResults<TOk extends Something, TErr extends Err = Err>(
   results: Result<TOk, TErr>[],

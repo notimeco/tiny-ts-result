@@ -17,11 +17,13 @@
     "LICENSE"
   ],
   "scripts": {
+    "tsc": "tsc",
     "fmt": "prettier --log-level warn --cache --check .",
     "fmt:fix": "prettier --log-level warn --cache --write .",
     "lint": "eslint --cache --max-warnings 0 src",
     "lint:fix": "eslint --cache --max-warnings 0 --fix src",
-    "test": "vitest --run --coverage --silent"
+    "test": "vitest --run --coverage --silent",
+    "test:without-examples": "vitest --run --coverage --silent --exclude src/examples"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
@@ -36,5 +38,7 @@
     "typescript-eslint": "^8.46.2",
     "vitest": "^3.2.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "eslint-plugin-import": "^2.32.0"
+  }
 }
