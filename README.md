@@ -1,5 +1,7 @@
 # tiny-ts-result
 
+[![Build and test](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml/badge.svg)](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml)
+
 A minimal result type for typescript. `tiny-ts-result` makes it easy to switch _exception based_ error
 handling to using _errors as values_.
 
@@ -93,7 +95,7 @@ function example(userIds: UUID[]): void {
 
 ## Exceptions interoperating with errors as values
 
-_Switching from exceptions to errors as values_
+**Switching from exceptions to errors as values**
 
 Most projects will still need to interact with exceptions at some point. A project may support either paradigm or
 more likely will be using 3rd party libraries that rely heavily on exceptions for error handling.
@@ -107,7 +109,7 @@ Example: Wrapping a function that might throw.
 const result: Result<User, Error> = wrap(() => getUserOrThrow(userId));
 ```
 
-_Switching from errors as values back to exceptions_
+**Switching from errors as values back to exceptions**
 
 Many applications rely on a top level error handler to translate exceptions back into valid responses, or in other
 cases it may just be easiest to get the required information by throwing and checking the output.
