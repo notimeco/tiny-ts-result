@@ -50,9 +50,7 @@ narrowing capabilities.
 Example: A simpler (non-generic) example of a result union with a discriminator `isOk`.
 
 ```typescript
-type UserResult =
-  | { isOk: true, ok: User, err: undefined }
-  | { isOk: false, ok: undefined, err: Error };
+type UserResult = { isOk: true; ok: User; err: undefined } | { isOk: false; ok: undefined; err: Error };
 ```
 
 `tiny-ts-result` implements a minimal result type that enables clean error handling without needing buy into an
