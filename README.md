@@ -122,9 +122,9 @@ const result: Result<User, Error> = wrap(() => getUserOrThrow(userId));
 const user: User = unwrap(result);
 ```
 
-## Working examples
+## Examples
 
-Read `src/examples` for a variety of use cases and some extra details in the comments.
+Read `src/examples` for a showcase of all available functionality with some commentary.
 
 - [basic-narrowing-batch](./src/examples/basic-narrowing-batch.ts)
 - [basic-narrowing-edge-case](./src/examples/basic-narrowing-edge-case.ts)

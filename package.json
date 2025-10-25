@@ -1,11 +1,14 @@
 {
   "name": "@notimeco/tiny-ts-result",
   "version": "0.1.0",
-  "repository": "https://github.com/notimeco/tiny-ts-result",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notimeco/tiny-ts-result.git"
+  },
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=18.20.0"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

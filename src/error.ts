@@ -84,7 +84,7 @@ export function errToException<
  * Note: This mapping is lossless.
  */
 export function exceptionToErr(error: unknown): Err {
-  if (Error.isError(error) || unknownHasMessageField(error)) {
+  if (error instanceof Error || unknownHasMessageField(error)) {
     return error;
   }
   return makeErr("Unknown error", makeCause(error));
