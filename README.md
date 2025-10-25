@@ -1,9 +1,9 @@
 # tiny-ts-result
 
-[![Build and test](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml/badge.svg)](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml)
-
 A minimal result type for typescript. `tiny-ts-result` makes it easy to switch _exception based_ error
 handling to using _errors as values_.
+
+[![Build and test](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml/badge.svg)](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml)
 
 ## Exception based error handling
 
