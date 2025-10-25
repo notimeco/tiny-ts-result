@@ -1,10 +1,18 @@
 {
   "name": "@notimeco/tiny-ts-result",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "description": "A minimal result type for typescript.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/notimeco/tiny-ts-result.git"
   },
+  "keywords": [
+    "typescript",
+    "error-handling",
+    "exceptions",
+    "result",
+    "result-type"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.20.0"
