@@ -6,7 +6,6 @@
     "url": "git+https://github.com/notimeco/tiny-ts-result.git"
   },
   "license": "MIT",
-  "private": true,
   "engines": {
     "node": ">=18.20.0"
   },
