@@ -1,6 +1,6 @@
 {
   "name": "@notimeco/tiny-ts-result",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A minimal result type for typescript.",
   "repository": {
     "type": "git",

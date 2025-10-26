@@ -1,11 +1,40 @@
 # tiny-ts-result
 
-A minimal result type for typescript. `tiny-ts-result` makes it easy to switch _exception based_ error
+A minimal result type for typescript. `tiny-ts-result` makes it easy to switch from using _exception based_ error
 handling to using _errors as values_.
 
 [![Build and test](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml/badge.svg)](https://github.com/notimeco/tiny-ts-result/actions/workflows/main.yml)
 
-## Problems with exception based error handling
+## Getting started
+
+Install the package.
+
+```shell
+npm install @notimeco/tiny-ts-result
+```
+
+Start creating `Result` types.
+
+```typescript
+import type { Result } from "@notimeco/tiny-ts-result";
+import { makeResultErr, makeResultOk } from "@notimeco/tiny-ts-result";
+
+// A result function returns either an _ok_ or an _err_.
+function getUsernameResult(userId: string): Result<string> {
+  if (ifSomethingFails()) {
+    return makeResultErr("Something failed");
+  }
+  return makeResultOk("My username");
+}
+```
+
+## Very nice, what's it for?
+
+Typescript's structural based type checking makes dealing with complex types a breeze, but the fun typically stops
+when it's time to do error handling. Every caught error is typed `unknown`, making it difficult to handle safely and
+correctly. The `Result` type enables an _errors as values_ style approach that is both clearer to read and safer to run.
+
+### Problems with exception based error handling
 
 Many functions fail and throw exceptions, correct exception handling in typescript can be tedious and error-prone. A
 javascript function can throw anything, this makes type safe error handling difficult as typescript sets caught
@@ -40,7 +69,7 @@ function exampleWithoutUsingResult(userId: string): void {
 }
 ```
 
-## Solutions with errors as values
+### Solutions with errors as values
 
 A result type is an alternative to throwing exceptions where errors are simply values. Instead of throwing a function
 returns a result, a union type representing either success with the original return type or failure with an error
@@ -89,7 +118,7 @@ function example(userId: UUID): void {
 }
 ```
 
-## Batch processing
+### Batch processing
 
 Batch processing can make things more difficult again. Often a batch needs to complete as much work as possible
 and model partial success. Throwing during batch processing unwinds the stack and typically prevents the remainder
@@ -114,7 +143,7 @@ function example(userIds: UUID[]): void {
 }
 ```
 
-## Exceptions interoperating with errors as values
+### Exceptions interoperating with errors as values
 
 **Switching from exceptions to errors as values**
 
@@ -161,7 +190,7 @@ Read `src/examples` for a showcase of all available functionality with some comm
 - [generic-narrowing](./src/examples/generic-narrowing.ts)
 - [generic-narrowing-limitations](./src/examples/generic-narrowing-limitations.ts)
 
-## Async
+## What about async?
 
 Everything here is synchronous for now. `Promise.allSettled` seems to already be just fine. Some async functionality
 might get added in a later version.
