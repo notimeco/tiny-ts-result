@@ -130,6 +130,8 @@ to manage.
 Example: Easily handling a batch of calls that could fail.
 
 ```typescript
+import { groupResults } from "@notimeco/tiny-ts-result";
+
 /**
  * Load a batch of Result<User, Error>.
  * Handle all the errors.
@@ -158,6 +160,10 @@ try catch block, catch any error and return a result type that is either the exp
 Example: Wrapping a function that might throw.
 
 ```typescript
+import type { Result } from "@notimeco/tiny-ts-result";
+import { wrap } from "@notimeco/tiny-ts-result";
+
+// Catch any errors that may have been thrown and return them in the result type.
 const result: Result<User, Error> = wrap(() => getUserOrThrow(userId));
 ```
 
@@ -171,9 +177,10 @@ throw. Result types can be unwrapped to return either the success value or just 
 Use `unwrap` on any result to either get the success type or throw.
 
 ```typescript
-const result: Result<User, Error> = wrap(() => getUserOrThrow(userId));
+import { unwrap } from "@notimeco/tiny-ts-result";
 
-const user: User = unwrap(result);
+// Forget about error handling for now; just return the `User` or throw.
+const user: User = unwrap(getUserResult());
 ```
 
 ## Examples
