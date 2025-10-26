@@ -1,11 +1,10 @@
 import { defineConfig } from "vitest/config";
 
 /**
- * @type {import('vitest/config').UserConfig}
+ * @type {import('vitest/config').ViteUserConfig}
  */
 export default defineConfig({
   test: {
-    /*
     coverage: {
       thresholds: {
         statements: 90,
@@ -14,6 +13,5 @@ export default defineConfig({
         lines: 90,
       },
     },
-    */
   },
 });
